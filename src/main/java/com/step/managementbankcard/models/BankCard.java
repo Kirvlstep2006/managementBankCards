@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "bankcards")
-public class BankCard implements UserDetails {
+public class BankCard  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_cards;
@@ -83,38 +83,5 @@ public class BankCard implements UserDetails {
         this.transaction_history = transaction_history;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
 
-    @Override
-    public String getPassword() {
-        return "";
-    }
-
-    @Override
-    public String getUsername() {
-        return "";
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
-    }
 }

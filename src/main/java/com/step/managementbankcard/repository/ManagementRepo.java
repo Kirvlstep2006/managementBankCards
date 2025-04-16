@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ManagementRepo extends JpaRepository<BankCard, Integer> {
 
-    Optional<BankCard> findByEmail(String email);
+
 
     List<BankCard> findAll();
 

@@ -4,31 +4,27 @@ info:
   description: API для управления пользователями
   version: 1.0.0
   contact:
-    email: support@example.com
+    email: example@example.com
 
 servers:
-  - url: http://localhost:3000/api/v1
+  - url: http://localhost:5665/main
     description: Локальный сервер
-  - url: https://api.example.com/v1
-    description: Продакшен сервер
-
 paths:
-  /users:
+  /read:
     get:
       tags:
-        - Users
-      summary: Получить список пользователей
-      description: Возвращает список пользователей с пагинацией
-      parameters:
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/limit'
+        - Cards
+      summary: Получить список всех карт
+      description: Возвращает список всех банковских карт
       responses:
         '200':
           description: Успешный ответ
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/BankCard'
         '500':
           description: Ошибка сервера
           content:
@@ -36,82 +32,136 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /create:
     post:
       tags:
-        - Users
-      summary: Создать нового пользователя
+        - Cards
+      summary: Создать новую карту
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCreate'
+              $ref: '#/components/schemas/BankCard'
       responses:
-        '201':
-          description: Пользователь создан
+        '200':
+          description: Карта успешно создана
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/BankCard'
         '400':
-          description: Невалидные данные
+          description: Неверные данные карты
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /{balance}:
+    delete:
+      tags:
+        - Cards
+      summary: Удалить карту по балансу
+      parameters:
+        - name: balance
+          in: path
+          required: true
+          schema:
+            type: number
+            format: double
+      responses:
+        '204':
+          description: Карта удалена
+        '404':
+          description: Карта не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{id_cards}/balance:
+    put:
+      tags:
+        - Cards
+      summary: Обновить баланс карты
+      parameters:
+        - name: id_cards
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: amount
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+      responses:
+        '200':
+          description: Баланс обновлен
+        '400':
+          description: Неверная сумма
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /perevod/{source_card_number}/{targret_card_number2}/amount:
+    put:
+      tags:
+        - Cards
+      summary: Перевод между картами
+      parameters:
+        - name: source_card_number
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: targret_card_number2
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: amount
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            minimum: 0.01
+      responses:
+        '200':
+          description: Перевод выполнен
+        '400':
+          description: Неверная сумма или карты
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
-    User:
+    BankCard:
       type: object
       properties:
-        id:
+        id_cards:
           type: integer
-        name:
+        card_number:
           type: string
-        email:
+        card_holder:
           type: string
-          format: email
-        createdAt:
+        expiry_date:
           type: string
-          format: date-time
+          format: date
+        status:
+          type: string
+        balance:
+          type: number
+          format: double
+        transaction_history:
+          type: string
       required:
-        - id
-        - name
-        - email
-
-    UserCreate:
-      type: object
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-          format: email
-        password:
-          type: string
-          format: password
-      required:
-        - name
-        - email
-        - password
-
-    UsersResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        meta:
-          type: object
-          properties:
-            total:
-              type: integer
-            page:
-              type: integer
-            limit:
-              type: integer
+        - card_number
+        - balance
 
     Error:
       type: object
@@ -122,28 +172,3 @@ components:
           type: string
         statusCode:
           type: integer
-
-  parameters:
-    page:
-      name: page
-      in: query
-      description: Номер страницы
-      required: false
-      schema:
-        type: integer
-        default: 1
-
-    limit:
-      name: limit
-      in: query
-      description: Количество элементов на странице
-      required: false
-      schema:
-        type: integer
-        default: 10
-
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT

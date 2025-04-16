@@ -15,17 +15,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CardsService implements UserDetailsService {
+public class CardsService  {
 
     private ManagementRepo managementRepo;
     public CardsService(ManagementRepo managementRepo) {
         this.managementRepo = managementRepo;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return managementRepo.findByCardNumber(username);
-    }
 
 
     public List<BankCard> getAll() {
