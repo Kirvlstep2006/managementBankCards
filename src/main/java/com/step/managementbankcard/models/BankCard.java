@@ -1,13 +1,14 @@
 package com.step.managementbankcard.models;
 
+import com.step.managementbankcard.config.CryptoConverter;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.context.annotation.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -17,10 +18,10 @@ public class BankCard  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_cards;
-
+    @Convert(converter = CryptoConverter.class)
     private String card_number;
     private String card_holder;
-    private Date expiry_date;
+    private LocalDate expiry_date;
     private String status;
     private Double balance;
     private String transaction_history;
@@ -67,11 +68,11 @@ public class BankCard  {
         this.status = status;
     }
 
-    public Date getExpiry_date() {
+    public LocalDate getExpiry_date() {
         return expiry_date;
     }
 
-    public void setExpiry_date(Date expiry_date) {
+    public void setExpiry_date(LocalDate expiry_date) {
         this.expiry_date = expiry_date;
     }
 

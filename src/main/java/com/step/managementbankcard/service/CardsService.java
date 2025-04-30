@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CardsService  {
+public class CardsService {
 
     private ManagementRepo managementRepo;
     public CardsService(ManagementRepo managementRepo) {
@@ -66,5 +66,15 @@ public class CardsService  {
         managementRepo.save(sourceCard);
         managementRepo.save(targetCard);
 
+    }
+
+    @Transactional
+    public void getBlockCard(String card_number){
+        managementRepo.findByCardNumber(card_number);
+    }
+
+    @Transactional
+    public void getActivatecard(String card_number){
+        managementRepo.findByCardNumber(card_number);
     }
 }

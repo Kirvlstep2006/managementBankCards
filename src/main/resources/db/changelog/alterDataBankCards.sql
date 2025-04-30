@@ -1,2 +1,2 @@
 
-ALTER TABLE BankCards ADD COLUMN telephone VARCHAR(255);
+ALTER TABLE "BankCard" ADD COLUMN telephone VARCHAR(255);
